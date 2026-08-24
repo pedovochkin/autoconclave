@@ -9,6 +9,8 @@ const advantages = [
   { number: '04', title: 'Проверка до выкупа', text: 'Изучаем историю, состояние и документы до того, как автомобиль станет вашим.' },
 ];
 
+const destinations = ['Европа', 'США', 'Китай', 'Корея', 'Дубай', 'Япония'];
+
 const routeSteps = [
   { number: '01', title: 'Бриф', kicker: 'Старт', text: 'Фиксируем модель, комплектацию, год, пробег и комфортный бюджет. Помогаем сузить поиск до реально выгодных вариантов.' },
   { number: '02', title: 'Поиск', kicker: 'Аукционы и дилеры', text: 'Подключаем прямые каналы в Европе, США, Китае, Корее, Дубае и Японии. Проверяем историю каждого кандидата.' },
@@ -123,11 +125,17 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="country-ticker" aria-label="Направления поставки">
-        <div>
-          <span>Европа</span><i>●</i><span>США</span><i>●</i><span>Китай</span><i>●</i>
-          <span>Корея</span><i>●</i><span>Дубай</span><i>●</i><span>Япония</span><i>●</i>
-          <span>Европа</span><i>●</i><span>США</span><i>●</i>
+      <div className="country-ticker" aria-label="Направления поставки: Европа, США, Китай, Корея, Дубай и Япония">
+        <div className="country-ticker-track" aria-hidden="true">
+          {[0, 1].map((copy) => (
+            <div className="ticker-group" key={copy}>
+              {destinations.map((destination) => (
+                <span className="ticker-item" key={`${copy}-${destination}`}>
+                  <b>{destination}</b><i>●</i>
+                </span>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
 
