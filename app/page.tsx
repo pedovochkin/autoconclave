@@ -96,18 +96,34 @@ export default function Home() {
               </a>
               <a className="text-link" href="#cases">Смотреть реальные кейсы <span>↓</span></a>
             </div>
-
-            <div className="trust-row" aria-label="Ключевые показатели">
-              <div><strong>27+</strong><span>лет в автобизнесе</span></div>
-              <div><strong>1000+</strong><span>доставок с 2022 года</span></div>
-              <div><strong>6</strong><span>направлений поставки</span></div>
-            </div>
           </div>
 
           <div className="hero-visual" aria-hidden="true">
-            <div className="visual-index">01 / 06</div>
-            <div className="red-disc" />
-            <img src="/images/hero-car.png" alt="" />
+            <div className="visual-topline">
+              <span>Международная сеть поставок</span>
+              <b>01 / 06</b>
+            </div>
+
+            <div className="market-orbit">
+              <span className="orbit-ring orbit-ring-one" />
+              <span className="orbit-ring orbit-ring-two" />
+              <span className="orbit-axis orbit-axis-x" />
+              <span className="orbit-axis orbit-axis-y" />
+
+              <div className="orbit-core">
+                <small>Рынков поставки</small>
+                <strong>06</strong>
+                <span>единый контроль</span>
+              </div>
+
+              {destinations.map((destination, index) => (
+                <span className={`market-label market-label-${index + 1}`} key={destination}>
+                  <i>{String(index + 1).padStart(2, '0')}</i>
+                  {destination}
+                </span>
+              ))}
+            </div>
+
             <div className="route-card">
               <span className="route-pulse" />
               <div>
@@ -115,6 +131,12 @@ export default function Home() {
                 <b>Поиск → выкуп → доставка</b>
               </div>
             </div>
+          </div>
+
+          <div className="trust-row" aria-label="Ключевые показатели">
+            <div><strong>27+</strong><span>лет в автобизнесе</span></div>
+            <div><strong>1000+</strong><span>доставок с 2022 года</span></div>
+            <div><strong>6</strong><span>направлений поставки</span></div>
           </div>
         </div>
 
