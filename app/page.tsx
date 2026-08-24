@@ -2,363 +2,91 @@
 
 import { FormEvent, useState } from 'react';
 
-const advantages = [
-  { number: '01', title: 'Прямой доступ', text: 'Ищем на закрытых аукционах и у проверенных дилеров — без цепочки лишних посредников.' },
-  { number: '02', title: 'Цена под контролем', text: 'Сразу показываем структуру бюджета: автомобиль, логистика, таможня и оформление.' },
-  { number: '03', title: 'Срок в договоре', text: 'Фиксируем этапы и держим вас в курсе движения автомобиля по всему маршруту.' },
-  { number: '04', title: 'Проверка до выкупа', text: 'Изучаем историю, состояние и документы до того, как автомобиль станет вашим.' },
+const markets = [
+  ['01', 'Европа', 'Дилеры и закрытые аукционы'], ['02', 'США', 'Широкий выбор и история'], ['03', 'Китай', 'Новые технологии'],
+  ['04', 'Корея', 'Проверенные площадки'], ['05', 'Дубай', 'Премиальные автомобили'], ['06', 'Япония', 'Прозрачные аукционы'],
 ];
-
-const destinations = ['Европа', 'США', 'Китай', 'Корея', 'Дубай', 'Япония'];
-
-const routeSteps = [
-  { number: '01', title: 'Бриф', kicker: 'Старт', text: 'Фиксируем модель, комплектацию, год, пробег и комфортный бюджет. Помогаем сузить поиск до реально выгодных вариантов.' },
-  { number: '02', title: 'Поиск', kicker: 'Аукционы и дилеры', text: 'Подключаем прямые каналы в Европе, США, Китае, Корее, Дубае и Японии. Проверяем историю каждого кандидата.' },
-  { number: '03', title: 'Выкуп', kicker: 'Только после согласования', text: 'Вы получаете расчёт и подтверждаете конкретный автомобиль. После этого заключаем договор и проводим выкуп.' },
-  { number: '04', title: 'Логистика', kicker: 'Маршрут под контролем', text: 'Организуем перевозку, страхование, таможенное оформление и информируем о статусе на ключевых точках.' },
-  { number: '05', title: 'Выдача', kicker: 'Финиш без сюрпризов', text: 'Проверяем соответствие заявленным данным, готовим комплект документов и передаём автомобиль владельцу.' },
+const services = [
+  ['01', 'Подбор', 'Определяем правильную конфигурацию под задачу и бюджет.'],
+  ['02', 'Проверка', 'Изучаем историю, состояние и документы до выкупа.'],
+  ['03', 'Поставка', 'Проектируем маршрут, страхуем и ведём таможенное оформление.'],
+  ['04', 'Выдача', 'Передаём ключи и комплект документов без скрытых этапов.'],
 ];
-
+const steps = [
+  ['Запрос', 'Расскажите, какой автомобиль нужен и что для вас действительно важно.'],
+  ['Шорт-лист', 'Получите несколько проверенных вариантов с понятным сравнением.'],
+  ['Сделка', 'Утвердите автомобиль и финальный бюджет перед выкупом.'],
+  ['Доставка', 'Следите за ключевыми точками маршрута вместе с менеджером.'],
+  ['Ключи', 'Заберите проверенный автомобиль и полный комплект документов.'],
+];
 const cases = [
-  { image: '/images/case-1.jpg', model: 'Porsche Macan', year: '2024', mileage: '13 тыс. км', price: '66 000 $', origin: 'США' },
-  { image: '/images/case-2.jpg', model: 'Audi A8', year: '2022', mileage: '20 тыс. км', price: '87 000 €', origin: 'Европа' },
-  { image: '/images/case-3.jpg', model: 'Porsche Cayenne', year: '2024', mileage: '52 тыс. км', price: '145 000 $', origin: 'США' },
-  { image: '/images/case-4.jpg', model: 'GMC Yukon', year: '2022', mileage: '38 тыс. км', price: '129 000 $', origin: 'США' },
-  { image: '/images/case-5.jpg', model: 'Mercedes GLE Coupe', year: '2025', mileage: 'Новый', price: '157 000 $', origin: 'Европа' },
-  { image: '/images/case-6.jpg', model: 'BMW X7', year: '2022', mileage: '36 тыс. км', price: '119 000 $', origin: 'США' },
+  { image:'/images/case-5.jpg', model:'Mercedes GLE Coupe', price:'157 000 $', meta:'2025 · Новый · Европа' },
+  { image:'/images/case-2.jpg', model:'Audi A8', price:'87 000 €', meta:'2022 · 20 000 км · Европа' },
+  { image:'/images/case-4.jpg', model:'GMC Yukon', price:'129 000 $', meta:'2022 · 38 000 км · США' },
+  { image:'/images/case-6.jpg', model:'BMW X7', price:'119 000 $', meta:'2022 · 36 000 км · США' },
 ];
-
-type RequestDraft = { name: string; phone: string; car: string; budget: string };
 
 export default function Home() {
-  const [activeStep, setActiveStep] = useState(0);
+  const [step, setStep] = useState(0);
   const [caseIndex, setCaseIndex] = useState(0);
-  const [draft, setDraft] = useState<RequestDraft | null>(null);
-
+  const [sent, setSent] = useState(false);
   const currentCase = cases[caseIndex];
 
-  function shiftCase(direction: number) {
-    setCaseIndex((current) => (current + direction + cases.length) % cases.length);
-  }
-
-  function prepareRequest(event: FormEvent<HTMLFormElement>) {
+  function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    setDraft({
-      name: String(data.get('name') || ''),
-      phone: String(data.get('phone') || ''),
-      car: String(data.get('car') || ''),
-      budget: String(data.get('budget') || ''),
-    });
+    setSent(true);
   }
-
-  const mailBody = draft
-    ? encodeURIComponent(`Имя: ${draft.name}\nТелефон: ${draft.phone}\nАвтомобиль: ${draft.car}\nБюджет: ${draft.budget}`)
-    : '';
 
   return (
     <main>
-      <section className="hero" id="top">
-        <header className="site-header shell">
-          <a className="brand" href="#top" aria-label="Авто-Конклав — на главную">
-            <img src="/images/logo-dark-bg.png" alt="Авто-Конклав" />
-          </a>
+      <header className="ra-header ra-shell" id="top">
+        <a href="#top" className="ra-brand"><img src="/images/logo-dark-bg.png" alt="Авто-Конклав" /></a>
+        <nav aria-label="Основная навигация"><a href="#services">Услуги</a><a href="#route">Маршрут</a><a href="#cases">Поставки</a><a href="#about">О компании</a></nav>
+        <a className="ra-menu-cta" href="#request">Обсудить задачу <span>↗</span></a>
+      </header>
 
-          <nav className="main-nav" aria-label="Основная навигация">
-            <a href="#advantages">Почему мы</a>
-            <a href="#route">Как работаем</a>
-            <a href="#cases">Кейсы</a>
-          </nav>
-
-          <a className="header-cta" href="#request">
-            Обсудить автомобиль <span>↗</span>
-          </a>
-        </header>
-
-        <div className="track track-one" aria-hidden="true" />
-        <div className="track track-two" aria-hidden="true" />
-
-        <div className="hero-grid shell">
-          <div className="hero-copy">
-            <p className="eyebrow"><span /> Автомобили со всего мира · с 1998 года</p>
-            <h1>
-              Ваш автомобиль.
-              <span>Наш точный маршрут.</span>
-            </h1>
-            <p className="hero-lead">
-              Находим, выкупаем и доставляем автомобили и технику из Европы,
-              США, Китая, Кореи, Дубая и Японии — с контролем на каждом этапе.
-            </p>
-
-            <div className="hero-actions">
-              <a className="primary-button" href="#request">
-                Подобрать автомобиль <span>↗</span>
-              </a>
-              <a className="text-link" href="#cases">Смотреть реальные кейсы <span>↓</span></a>
-            </div>
-          </div>
-
-          <div className="hero-visual" aria-hidden="true">
-            <div className="supply-panel">
-              <div className="supply-panel-head">
-                <div>
-                  <small>География поставок</small>
-                  <b>Международная сеть</b>
-                </div>
-                <strong>06</strong>
-              </div>
-
-              <div className="market-grid">
-                {destinations.map((destination, index) => (
-                  <div className="market-item" key={destination}>
-                    <span>{String(index + 1).padStart(2, '0')}</span>
-                    <b>{destination}</b>
-                    <i />
-                  </div>
-                ))}
-              </div>
-
-              <div className="route-card">
-                <span className="route-pulse" />
-                <div>
-                  <small>Маршрут активен</small>
-                  <b>Поиск → выкуп → доставка</b>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="trust-row" aria-label="Ключевые показатели">
-            <div><strong>27+</strong><span>лет в автобизнесе</span></div>
-            <div><strong>1000+</strong><span>доставок с 2022 года</span></div>
-            <div><strong>6</strong><span>направлений поставки</span></div>
-          </div>
+      <section className="ra-hero ra-shell">
+        <div className="ra-hero-title">
+          <div className="ra-index"><span>Автомобили со всего мира</span><b>1998—2026</b></div>
+          <h1>Автомобиль.<br /><em>Без границ.</em></h1>
+          <div className="ra-hero-bottom"><p>Профессиональный подбор, проверка, выкуп и доставка автомобилей из шести ключевых рынков — под единым контролем.</p><a href="#request">Начать подбор <span>↗</span></a></div>
         </div>
-
-        <div className="hero-footer shell">
-          <span>Москва · Верхняя, 20к1</span>
-          <span>Ежедневно 09:00—20:00</span>
-          <a href="tel:+79031307887">+7 (903) 130-78-87</a>
-        </div>
+        <div className="ra-hero-media"><img src="/images/case-5.jpg" alt="Mercedes GLE Coupe, поставленный Авто-Конклав" /><div className="ra-media-label"><small>Поставка под ключ</small><b>Европа → Москва</b></div><span className="ra-media-number">01</span></div>
+        <div className="ra-facts"><div><strong>27+</strong><span>лет опыта</span></div><div><strong>1000+</strong><span>доставок</span></div><div><strong>06</strong><span>рынков</span></div><div><strong>01</strong><span>ответственный</span></div></div>
       </section>
 
-      <div className="country-ticker" aria-label="Направления поставки: Европа, США, Китай, Корея, Дубай и Япония">
-        <div className="country-ticker-track" aria-hidden="true">
-          {[0, 1].map((copy) => (
-            <div className="ticker-group" key={copy}>
-              {destinations.map((destination) => (
-                <span className="ticker-item" key={`${copy}-${destination}`}>
-                  <b>{destination}</b><i>●</i>
-                </span>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
+      <section className="ra-section ra-services" id="services"><div className="ra-shell">
+        <div className="ra-section-title"><span>01 / Система работы</span><h2>Сложный процесс.<br /><em>Простой для вас.</em></h2></div>
+        <div className="ra-service-grid">{services.map(([number,title,text]) => <article key={number}><div><span>{number}</span><i>↗</i></div><h3>{title}</h3><p>{text}</p></article>)}</div>
+      </div></section>
 
-      <section className="section advantages" id="advantages">
-        <div className="section-head shell">
-          <div className="section-label"><span>01</span> Почему Авто-Конклав</div>
-          <div>
-            <p className="overline">Не обещаем магию — строим понятный процесс</p>
-            <h2>Выгодный автомобиль начинается <em>с правильного доступа.</em></h2>
-          </div>
-        </div>
+      <section className="ra-atlas"><div className="ra-shell ra-atlas-grid">
+        <div className="ra-atlas-copy"><span>02 / География</span><h2>Шесть рынков.<br /><em>Один стандарт.</em></h2><p>Знаем особенности каждой площадки, логистического плеча и комплекта документов.</p></div>
+        <div className="ra-market-list">{markets.map(([number,name,detail]) => <div key={number}><span>{number}</span><b>{name}</b><small>{detail}</small><i>→</i></div>)}</div>
+      </div></section>
 
-        <div className="advantage-grid shell">
-          {advantages.map((item) => (
-            <article className="advantage-card" key={item.number}>
-              <div className="card-top"><span>{item.number}</span><i>↗</i></div>
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-              <div className="wheel-mark" aria-hidden="true"><b /></div>
-            </article>
-          ))}
-        </div>
-      </section>
+      <section className="ra-section ra-route" id="route"><div className="ra-shell">
+        <div className="ra-section-title"><span>03 / Путь к автомобилю</span><h2>От запроса<br /><em>до ключей.</em></h2></div>
+        <div className="ra-route-tabs" role="tablist">{steps.map(([title],index) => <button className={step===index?'active':''} key={title} type="button" role="tab" aria-selected={step===index} onClick={()=>setStep(index)}><span>{String(index+1).padStart(2,'0')}</span><b>{title}</b></button>)}</div>
+        <div className="ra-route-panel" role="tabpanel"><div><small>Текущий этап</small><strong>{String(step+1).padStart(2,'0')}</strong></div><h3>{steps[step][0]}</h3><p>{steps[step][1]}</p><button type="button" onClick={()=>setStep((step+1)%steps.length)}>Следующий <span>→</span></button></div>
+      </div></section>
 
-      <section className="section story">
-        <div className="story-grid shell">
-          <div className="story-media">
-            <div className="story-number">02 / О компании</div>
-            <div className="portrait-wrap">
-              <img src="/images/director-v2.png" alt="Михаил Моженков, управляющий директор" />
-              <span className="portrait-outline" aria-hidden="true" />
-            </div>
-          </div>
+      <section className="ra-section ra-cases" id="cases"><div className="ra-shell">
+        <div className="ra-section-title"><span>04 / Поставленные автомобили</span><h2>Выбор,<br /><em>подтверждённый делом.</em></h2></div>
+        <div className="ra-case-layout"><div className="ra-case-main"><img src={currentCase.image} alt={currentCase.model}/><span>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</span></div><div className="ra-case-info"><small>Цена под ключ</small><strong>{currentCase.price}</strong><h3>{currentCase.model}</h3><p>{currentCase.meta}</p><a href="#request">Хочу похожий <span>↗</span></a></div><div className="ra-case-strip">{cases.map((item,index)=><button className={caseIndex===index?'active':''} type="button" key={item.model} onClick={()=>setCaseIndex(index)}><img src={item.image} alt=""/><span>{String(index+1).padStart(2,'0')}</span></button>)}</div></div>
+      </div></section>
 
-          <div className="story-copy">
-            <p className="overline">Сделано людьми, одержимыми автомобилями</p>
-            <blockquote>«Мы берём на себя сложное, чтобы вам осталось выбрать автомобиль и получить ключи».</blockquote>
-            <p>
-              С 1998 года команда профессионально занимается поставкой автомобилей,
-              мотоциклов, специальной техники, катеров и яхт. Мы сопровождаем сделку
-              от первого запроса до передачи документов владельцу.
-            </p>
-            <div className="signature-line">
-              <b>Моженков Михаил Владимирович</b>
-              <span>Управляющий директор</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      <section className="ra-section ra-about" id="about"><div className="ra-shell ra-about-grid">
+        <div className="ra-about-copy"><span>05 / Авто-Конклав</span><blockquote>«Мы строим доверие не словами, а контролем каждой детали сделки».</blockquote><p>С 1998 года команда поставляет автомобили, мотоциклы, специальную технику, катера и яхты. Международный опыт превратили в понятную систему для частного клиента.</p><div><b>Моженков Михаил Владимирович</b><small>Управляющий директор</small></div></div>
+        <div className="ra-about-media"><img src="/images/director-v2.png" alt="Михаил Моженков, управляющий директор"/><span>27 лет<br/>в автобизнесе</span></div>
+      </div></section>
 
-      <section className="section process" id="route">
-        <div className="section-head process-head shell">
-          <div className="section-label light"><span>03</span> Маршрут сделки</div>
-          <div>
-            <p className="overline red">От запроса до ключей</p>
-            <h2>Пять этапов. <em>Один ответственный.</em></h2>
-          </div>
-        </div>
+      <section className="ra-request" id="request"><div className="ra-shell ra-request-grid">
+        <div><span>06 / Ваш запрос</span><h2>Давайте найдём<br /><em>ваш автомобиль.</em></h2><p>Опишите ориентиры — марку, модель и бюджет. Мы вернёмся с вопросами и понятным планом действий.</p><div className="ra-contacts"><a href="tel:+79031307887">+7 (903) 130-78-87</a><a href="mailto:info@autoconclave.com">info@autoconclave.com</a></div></div>
+        <form onSubmit={submit}><label><span>Имя</span><input required name="name" placeholder="Ваше имя"/></label><label><span>Телефон</span><input required name="phone" placeholder="+7 900 000-00-00"/></label><label><span>Автомобиль</span><input name="car" placeholder="Марка и модель"/></label><label><span>Бюджет</span><input name="budget" placeholder="Ориентир"/></label><button type="submit">Отправить запрос <span>↗</span></button>{sent&&<p>Спасибо. Черновик заявки готов — свяжитесь с нами по телефону или почте.</p>}</form>
+      </div></section>
 
-        <div className="process-grid shell">
-          <div className="step-list" role="tablist" aria-label="Этапы сделки">
-            {routeSteps.map((step, index) => (
-              <button
-                key={step.number}
-                className={index === activeStep ? 'active' : ''}
-                type="button"
-                role="tab"
-                aria-selected={index === activeStep}
-                onClick={() => setActiveStep(index)}
-              >
-                <span>{step.number}</span><b>{step.title}</b><i>↗</i>
-              </button>
-            ))}
-          </div>
-
-          <div className="step-display" role="tabpanel">
-            <div className="step-counter">{routeSteps[activeStep].number} / 05</div>
-            <p>{routeSteps[activeStep].kicker}</p>
-            <h3>{routeSteps[activeStep].title}</h3>
-            <div className="step-rule"><span style={{ width: `${((activeStep + 1) / routeSteps.length) * 100}%` }} /></div>
-            <p className="step-text">{routeSteps[activeStep].text}</p>
-            <button className="next-step" type="button" onClick={() => setActiveStep((activeStep + 1) % routeSteps.length)}>
-              Следующий этап <span>→</span>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section className="section cases" id="cases">
-        <div className="section-head shell">
-          <div className="section-label"><span>04</span> Реальные кейсы</div>
-          <div>
-            <p className="overline">Автомобили, которые уже прошли наш маршрут</p>
-            <h2>Не каталог. <em>Результаты.</em></h2>
-          </div>
-        </div>
-
-        <div className="case-showcase shell">
-          <div className="case-image">
-            <img src={currentCase.image} alt={`${currentCase.model}, доставленный автомобиль`} />
-            <span className="case-origin">{currentCase.origin}</span>
-            <span className="case-index">{String(caseIndex + 1).padStart(2, '0')} / {String(cases.length).padStart(2, '0')}</span>
-          </div>
-
-          <div className="case-info" aria-live="polite">
-            <p>Под ключ</p>
-            <strong>{currentCase.price}</strong>
-            <h3>{currentCase.model}</h3>
-            <dl>
-              <div><dt>Год</dt><dd>{currentCase.year}</dd></div>
-              <div><dt>Пробег</dt><dd>{currentCase.mileage}</dd></div>
-              <div><dt>Поставка</dt><dd>{currentCase.origin}</dd></div>
-            </dl>
-            <a href="#request">Хочу похожий вариант <span>↗</span></a>
-          </div>
-        </div>
-
-        <div className="case-controls shell">
-          <div className="case-buttons">
-            <button type="button" onClick={() => shiftCase(-1)} aria-label="Предыдущий кейс">←</button>
-            <button type="button" onClick={() => shiftCase(1)} aria-label="Следующий кейс">→</button>
-          </div>
-          <div className="case-dots" aria-label="Выбрать кейс">
-            {cases.map((item, index) => (
-              <button
-                type="button"
-                className={index === caseIndex ? 'active' : ''}
-                key={item.model}
-                onClick={() => setCaseIndex(index)}
-                aria-label={`Показать ${item.model}`}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="request" id="request">
-        <div className="request-track" aria-hidden="true" />
-        <div className="request-grid shell">
-          <div className="request-copy">
-            <div className="section-label light"><span>05</span> Начать подбор</div>
-            <p className="overline red">Ваш следующий автомобиль уже где-то есть</p>
-            <h2>Давайте <em>его найдём.</em></h2>
-            <p>Оставьте параметры — мы подготовим первый ориентир по рынкам, бюджету и срокам.</p>
-            <div className="request-contacts">
-              <a href="tel:+79031307887"><small>Позвонить</small>+7 (903) 130-78-87</a>
-              <a href="https://t.me/AutoConclave" target="_blank" rel="noreferrer"><small>Telegram</small>@AutoConclave</a>
-            </div>
-          </div>
-
-          <form className="request-form" onSubmit={prepareRequest}>
-            <label>
-              <span>Как вас зовут</span>
-              <input name="name" autoComplete="name" placeholder="Имя" required />
-            </label>
-            <label>
-              <span>Телефон</span>
-              <input name="phone" type="tel" autoComplete="tel" placeholder="+7 999 000-00-00" required />
-            </label>
-            <label>
-              <span>Какой автомобиль ищете</span>
-              <input name="car" placeholder="Марка, модель, год" required />
-            </label>
-            <label>
-              <span>Планируемый бюджет</span>
-              <select name="budget" defaultValue="">
-                <option value="" disabled>Выберите диапазон</option>
-                <option>до 5 млн ₽</option>
-                <option>5–10 млн ₽</option>
-                <option>10–20 млн ₽</option>
-                <option>20+ млн ₽</option>
-              </select>
-            </label>
-            <label className="consent">
-              <input type="checkbox" required />
-              <span>Согласен на обработку данных для связи по заявке</span>
-            </label>
-            <button className="form-submit" type="submit">Сформировать заявку <span>↗</span></button>
-
-            {draft && (
-              <div className="draft-ready" role="status">
-                <div><b>Заявка подготовлена</b><span>Отправьте её удобным способом</span></div>
-                <a href={`mailto:autoconclave@yandex.ru?subject=${encodeURIComponent('Заявка на подбор автомобиля')}&body=${mailBody}`}>E-mail ↗</a>
-              </div>
-            )}
-          </form>
-        </div>
-      </section>
-
-      <footer>
-        <div className="footer-main shell">
-          <img src="/images/logo-dark-bg.png" alt="Авто-Конклав" />
-          <nav aria-label="Навигация в подвале">
-            <a href="#advantages">Почему мы</a>
-            <a href="#route">Как работаем</a>
-            <a href="#cases">Кейсы</a>
-            <a href="#request">Контакты</a>
-          </nav>
-          <a className="footer-up" href="#top" aria-label="Наверх">↑</a>
-        </div>
-        <div className="footer-bottom shell">
-          <span>© 2026 Авто-Конклав</span>
-          <span>Москва, ул. Верхняя, 20к1 · Ежедневно 09:00—20:00</span>
-          <a href="mailto:autoconclave@yandex.ru">autoconclave@yandex.ru</a>
-        </div>
-      </footer>
+      <footer><div className="ra-shell ra-footer"><img src="/images/logo-dark-bg.png" alt="Авто-Конклав"/><p>Москва · ул. Верхняя, 20к1<br/>Ежедневно 09:00—20:00</p><a href="#top">Наверх ↑</a></div></footer>
     </main>
   );
 }
