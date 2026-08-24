@@ -157,7 +157,7 @@ export default function Home() {
           <div className="story-media">
             <div className="story-number">02 / О компании</div>
             <div className="portrait-wrap">
-              <img src="/images/director.png" alt="Михаил Моженков, управляющий директор" />
+              <img src="/images/director-v2.png" alt="Михаил Моженков, управляющий директор" />
               <span className="portrait-outline" aria-hidden="true" />
             </div>
           </div>
