@@ -99,36 +99,31 @@ export default function Home() {
           </div>
 
           <div className="hero-visual" aria-hidden="true">
-            <div className="visual-topline">
-              <span>Международная сеть поставок</span>
-              <b>01 / 06</b>
-            </div>
-
-            <div className="market-orbit">
-              <span className="orbit-ring orbit-ring-one" />
-              <span className="orbit-ring orbit-ring-two" />
-              <span className="orbit-axis orbit-axis-x" />
-              <span className="orbit-axis orbit-axis-y" />
-
-              <div className="orbit-core">
-                <small>Рынков поставки</small>
+            <div className="supply-panel">
+              <div className="supply-panel-head">
+                <div>
+                  <small>География поставок</small>
+                  <b>Международная сеть</b>
+                </div>
                 <strong>06</strong>
-                <span>единый контроль</span>
               </div>
 
-              {destinations.map((destination, index) => (
-                <span className={`market-label market-label-${index + 1}`} key={destination}>
-                  <i>{String(index + 1).padStart(2, '0')}</i>
-                  {destination}
-                </span>
-              ))}
-            </div>
+              <div className="market-grid">
+                {destinations.map((destination, index) => (
+                  <div className="market-item" key={destination}>
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    <b>{destination}</b>
+                    <i />
+                  </div>
+                ))}
+              </div>
 
-            <div className="route-card">
-              <span className="route-pulse" />
-              <div>
-                <small>Маршрут активен</small>
-                <b>Поиск → выкуп → доставка</b>
+              <div className="route-card">
+                <span className="route-pulse" />
+                <div>
+                  <small>Маршрут активен</small>
+                  <b>Поиск → выкуп → доставка</b>
+                </div>
               </div>
             </div>
           </div>
