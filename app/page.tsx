@@ -86,7 +86,7 @@ export default function Home() {
       <section className="ra-hero ra-shell">
         <div className="ra-hero-title">
           <div className="ra-index"><span>Автомобили со всего мира</span><b>1998—2026</b></div>
-          <h1>Автомобиль.<br /><em>Без границ.</em></h1>
+          <h1>Автомобиль.<br /><em>Без границ</em></h1>
           <div className="ra-hero-bottom"><p>Профессиональный подбор, проверка, выкуп и доставка автомобилей из шести ключевых рынков — под единым контролем.</p><a href="#request">Начать подбор <span>↗</span></a></div>
         </div>
         <div className="ra-hero-media"><img src={asset('/images/hero-mercedes.jpg')} alt="Mercedes-Benz — автомобиль, поставленный Авто-Конклав" /><div className="ra-media-label"><small>Поставка под ключ</small><b>Европа → Москва</b></div><span className="ra-media-number">01</span></div>
