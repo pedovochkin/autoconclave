@@ -4,6 +4,10 @@ import { FormEvent, useState } from 'react';
 
 const asset = (path: string) => `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}${path}`;
 
+function Arrow({ direction = 'next', diagonal = false }: { direction?: 'next' | 'prev'; diagonal?: boolean }) {
+  return <span className={`ra-arrow ${direction === 'prev' ? 'ra-arrow-prev' : 'ra-arrow-next'}${diagonal ? ' ra-arrow-diagonal' : ''}`} aria-hidden="true" />;
+}
+
 const markets = [
   ['01', 'Европа', 'Дилеры и закрытые аукционы'], ['02', 'США', 'Широкий выбор и история'], ['03', 'Китай', 'Новые технологии'],
   ['04', 'Корея', 'Проверенные площадки'], ['05', 'Дубай', 'Премиальные автомобили'], ['06', 'Япония', 'Прозрачные аукционы'],
@@ -80,14 +84,14 @@ export default function Home() {
       <header className="ra-header ra-shell" id="top">
         <a href="#top" className="ra-brand"><img src={asset('/images/logo-dark-bg.png')} alt="Авто-Конклав" /></a>
         <nav aria-label="Основная навигация"><a href="#services">Услуги</a><a href="#route">Маршрут</a><a href="#cases">Поставки</a><a href="#about">О компании</a></nav>
-        <a className="ra-menu-cta" href="#request">Обсудить задачу <span>↗</span></a>
+        <a className="ra-menu-cta" href="#request">Обсудить задачу <Arrow diagonal /></a>
       </header>
 
       <section className="ra-hero ra-shell">
         <div className="ra-hero-title">
           <div className="ra-index"><span>Автомобили со всего мира</span><b>1998—2026</b></div>
-          <h1>Автомобиль.<br /><em>Без границ</em></h1>
-          <div className="ra-hero-bottom"><p>Профессиональный подбор, проверка, выкуп и доставка автомобилей из шести ключевых рынков — под единым контролем.</p><a href="#request">Начать подбор <span>↗</span></a></div>
+          <h1>Автомобиль.<br /><em>Без границ<span className="ra-hero-dot">.</span></em></h1>
+          <div className="ra-hero-bottom"><p>Профессиональный подбор, проверка, выкуп и доставка автомобилей из шести ключевых рынков — под единым контролем.</p><a href="#request">Начать подбор <Arrow diagonal /></a></div>
         </div>
         <div className="ra-hero-media"><img src={asset('/images/hero-mercedes.jpg')} alt="Mercedes-Benz — автомобиль, поставленный Авто-Конклав" /><div className="ra-media-label"><small>Поставка под ключ</small><b>Европа → Москва</b></div><span className="ra-media-number">01</span></div>
         <div className="ra-facts"><div><strong>27+</strong><span>лет опыта</span></div><div><strong>1000+</strong><span>доставок</span></div><div><strong>06</strong><span>рынков</span></div><div><strong>01</strong><span>ответственный</span></div></div>
@@ -95,25 +99,25 @@ export default function Home() {
 
       <section className="ra-section ra-services" id="services"><div className="ra-shell">
         <div className="ra-section-title"><span>01 / Система работы</span><h2>Сложный процесс.<br /><em>Простой для вас.</em></h2></div>
-        <div className="ra-service-grid">{services.map(([number,title,text]) => <article key={number}><div><span>{number}</span><i>↗</i></div><h3>{title}</h3><p>{text}</p></article>)}</div>
+        <div className="ra-service-grid">{services.map(([number,title,text]) => <article key={number}><div><span>{number}</span><i><Arrow diagonal /></i></div><h3>{title}</h3><p>{text}</p></article>)}</div>
       </div></section>
 
       <section className="ra-atlas"><div className="ra-shell ra-atlas-grid">
         <div className="ra-atlas-copy"><span>02 / География</span><h2>Шесть рынков.<br /><em>Один стандарт.</em></h2><p>Знаем особенности каждой площадки, логистического плеча и комплекта документов.</p></div>
-        <div className="ra-market-list">{markets.map(([number,name,detail]) => <div key={number}><span>{number}</span><b>{name}</b><small>{detail}</small><i>→</i></div>)}</div>
+        <div className="ra-market-list">{markets.map(([number,name,detail]) => <div key={number}><span>{number}</span><b>{name}</b><small>{detail}</small><i><Arrow /></i></div>)}</div>
       </div></section>
 
       <section className="ra-section ra-route" id="route"><div className="ra-shell">
         <div className="ra-section-title"><span>03 / Путь к автомобилю</span><h2>От запроса<br /><em>до ключей.</em></h2></div>
         <div className="ra-route-tabs" role="tablist">{steps.map(([title],index) => <button className={step===index?'active':''} key={title} type="button" role="tab" aria-selected={step===index} onClick={()=>setStep(index)}><span>{String(index+1).padStart(2,'0')}</span><b>{title}</b></button>)}</div>
-        <div className="ra-route-panel" role="tabpanel"><div><small>Текущий этап</small><strong>{String(step+1).padStart(2,'0')}</strong></div><h3>{steps[step][0]}</h3><p>{steps[step][1]}</p><button type="button" onClick={()=>setStep((step+1)%steps.length)}>Следующий <span>→</span></button></div>
+        <div className="ra-route-panel" role="tabpanel"><div><small>Текущий этап</small><strong>{String(step+1).padStart(2,'0')}</strong></div><h3>{steps[step][0]}</h3><p>{steps[step][1]}</p><button type="button" onClick={()=>setStep((step+1)%steps.length)}>Следующий <Arrow /></button></div>
       </div></section>
 
       <section className="ra-section ra-cases" id="cases"><div className="ra-shell">
         <div className="ra-section-title"><span>04 / Поставленные автомобили</span><h2>Выбор,<br /><em>подтверждённый делом.</em></h2></div>
         <div className="ra-case-layout">
-          <div className="ra-case-main"><img src={asset(currentPhoto.image)} alt={currentPhoto.alt}/><span>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</span><div className="ra-case-controls"><button type="button" onClick={showPreviousPhoto} aria-label="Предыдущая фотография">←</button><b>{String(photoIndex+1).padStart(2,'0')} / {String(currentCase.photos.length).padStart(2,'0')}</b><button type="button" onClick={showNextPhoto} aria-label="Следующая фотография">→</button></div></div>
-          <div className="ra-case-info"><small>Реальная поставка</small><strong>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</strong><h3>{currentCase.model}</h3><p>{currentCase.category}<br/>{currentCase.meta}</p><a href="#request">Обсудить похожий <span>↗</span></a></div>
+          <div className="ra-case-main"><img src={asset(currentPhoto.image)} alt={currentPhoto.alt}/><span>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</span><div className="ra-case-controls"><button type="button" onClick={showPreviousPhoto} aria-label="Предыдущая фотография"><Arrow direction="prev" /></button><b>{String(photoIndex+1).padStart(2,'0')} / {String(currentCase.photos.length).padStart(2,'0')}</b><button type="button" onClick={showNextPhoto} aria-label="Следующая фотография"><Arrow /></button></div></div>
+          <div className="ra-case-info"><small>Реальная поставка</small><strong>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</strong><h3>{currentCase.model}</h3><p>{currentCase.category}<br/>{currentCase.meta}</p><a href="#request">Обсудить похожий <Arrow diagonal /></a></div>
           <div className="ra-case-strip" aria-label="Выбор автомобиля">{cases.map((item,index)=><button className={caseIndex===index?'active':''} type="button" key={item.model} aria-label={`Открыть кейс ${item.model}`} onClick={()=>{setCaseIndex(index);setPhotoIndex(0);}}><img src={asset(item.photos[0].image)} alt=""/><span>{String(index+1).padStart(2,'0')} · {item.model}</span></button>)}</div>
           <div className="ra-case-gallery" aria-label={`Фотографии ${currentCase.model}`}>{currentCase.photos.map((item,index)=><button className={photoIndex===index?'active':''} type="button" key={item.image} aria-label={`Открыть фотографию ${index+1}`} onClick={()=>setPhotoIndex(index)}><img src={asset(item.image)} alt={item.alt}/><span>{String(index+1).padStart(2,'0')}</span></button>)}</div>
         </div>
@@ -126,10 +130,10 @@ export default function Home() {
 
       <section className="ra-request" id="request"><div className="ra-shell ra-request-grid">
         <div><span>06 / Ваш запрос</span><h2>Давайте найдём<br /><em>ваш автомобиль.</em></h2><p>Опишите ориентиры — марку, модель и бюджет. Мы вернёмся с вопросами и понятным планом действий.</p><div className="ra-contacts"><a href="tel:+79031307887">+7 (903) 130-78-87</a><a href="mailto:info@autoconclave.com">info@autoconclave.com</a></div></div>
-        <form onSubmit={submit}><label><span>Имя</span><input required name="name" placeholder="Ваше имя"/></label><label><span>Телефон</span><input required name="phone" placeholder="+7 900 000-00-00"/></label><label><span>Автомобиль</span><input name="car" placeholder="Марка и модель"/></label><label><span>Бюджет</span><input name="budget" placeholder="Ориентир"/></label><button type="submit">Отправить запрос <span>↗</span></button>{sent&&<p>Спасибо. Черновик заявки готов — свяжитесь с нами по телефону или почте.</p>}</form>
+        <form onSubmit={submit}><label><span>Имя</span><input required name="name" placeholder="Ваше имя"/></label><label><span>Телефон</span><input required name="phone" placeholder="+7 900 000-00-00"/></label><label><span>Автомобиль</span><input name="car" placeholder="Марка и модель"/></label><label><span>Бюджет</span><input name="budget" placeholder="Ориентир"/></label><button type="submit">Отправить запрос <Arrow diagonal /></button>{sent&&<p>Спасибо. Черновик заявки готов — свяжитесь с нами по телефону или почте.</p>}</form>
       </div></section>
 
-      <footer><div className="ra-shell ra-footer"><img src={asset('/images/logo-dark-bg.png')} alt="Авто-Конклав"/><p>Москва · ул. Верхняя, 20к1<br/>Ежедневно 09:00—20:00</p><a href="#top">Наверх ↑</a></div></footer>
+      <footer><div className="ra-shell ra-footer"><img src={asset('/images/logo-dark-bg.png')} alt="Авто-Конклав"/><p>Москва · ул. Верхняя, 20к1<br/>Ежедневно 09:00—20:00</p><a href="#top">Наверх <Arrow diagonal /></a></div></footer>
     </main>
   );
 }
