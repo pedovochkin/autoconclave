@@ -67,6 +67,8 @@ export default function Home() {
   const [sent, setSent] = useState(false);
   const currentCase = cases[caseIndex];
   const currentPhoto = currentCase.photos[photoIndex];
+  const showPreviousPhoto = () => setPhotoIndex((photoIndex + currentCase.photos.length - 1) % currentCase.photos.length);
+  const showNextPhoto = () => setPhotoIndex((photoIndex + 1) % currentCase.photos.length);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -110,7 +112,7 @@ export default function Home() {
       <section className="ra-section ra-cases" id="cases"><div className="ra-shell">
         <div className="ra-section-title"><span>04 / Поставленные автомобили</span><h2>Выбор,<br /><em>подтверждённый делом.</em></h2></div>
         <div className="ra-case-layout">
-          <div className="ra-case-main"><img src={asset(currentPhoto.image)} alt={currentPhoto.alt}/><span>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</span><b>{String(photoIndex+1).padStart(2,'0')} / {String(currentCase.photos.length).padStart(2,'0')}</b></div>
+          <div className="ra-case-main"><img src={asset(currentPhoto.image)} alt={currentPhoto.alt}/><span>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</span><div className="ra-case-controls"><button type="button" onClick={showPreviousPhoto} aria-label="Предыдущая фотография">←</button><b>{String(photoIndex+1).padStart(2,'0')} / {String(currentCase.photos.length).padStart(2,'0')}</b><button type="button" onClick={showNextPhoto} aria-label="Следующая фотография">→</button></div></div>
           <div className="ra-case-info"><small>Реальная поставка</small><strong>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</strong><h3>{currentCase.model}</h3><p>{currentCase.category}<br/>{currentCase.meta}</p><a href="#request">Обсудить похожий <span>↗</span></a></div>
           <div className="ra-case-strip" aria-label="Выбор автомобиля">{cases.map((item,index)=><button className={caseIndex===index?'active':''} type="button" key={item.model} aria-label={`Открыть кейс ${item.model}`} onClick={()=>{setCaseIndex(index);setPhotoIndex(0);}}><img src={asset(item.photos[0].image)} alt=""/><span>{String(index+1).padStart(2,'0')} · {item.model}</span></button>)}</div>
           <div className="ra-case-gallery" aria-label={`Фотографии ${currentCase.model}`}>{currentCase.photos.map((item,index)=><button className={photoIndex===index?'active':''} type="button" key={item.image} aria-label={`Открыть фотографию ${index+1}`} onClick={()=>setPhotoIndex(index)}><img src={asset(item.image)} alt={item.alt}/><span>{String(index+1).padStart(2,'0')}</span></button>)}</div>
