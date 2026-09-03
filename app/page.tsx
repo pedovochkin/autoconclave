@@ -87,7 +87,7 @@ export default function Home() {
           <h1>Автомобиль.<br /><em>Без границ.</em></h1>
           <div className="ra-hero-bottom"><p>Профессиональный подбор, проверка, выкуп и доставка автомобилей из шести ключевых рынков — под единым контролем.</p><a href="#request">Начать подбор <span>↗</span></a></div>
         </div>
-        <div className="ra-hero-media"><img src={asset('/images/case-5.jpg')} alt="Mercedes GLE Coupe, поставленный Авто-Конклав" /><div className="ra-media-label"><small>Поставка под ключ</small><b>Европа → Москва</b></div><span className="ra-media-number">01</span></div>
+        <div className="ra-hero-media"><img src={asset('/images/hero-audi.jpg')} alt="Audi — автомобиль, поставленный Авто-Конклав" /><div className="ra-media-label"><small>Поставка под ключ</small><b>Европа → Москва</b></div><span className="ra-media-number">01</span></div>
         <div className="ra-facts"><div><strong>27+</strong><span>лет опыта</span></div><div><strong>1000+</strong><span>доставок</span></div><div><strong>06</strong><span>рынков</span></div><div><strong>01</strong><span>ответственный</span></div></div>
       </section>
 
