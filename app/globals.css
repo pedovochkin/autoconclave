@@ -86,17 +86,18 @@ button,input { font:inherit; }
 .ra-route-panel>button span { color:var(--red); font-size:19px; }
 
 .ra-cases { background:#fff; }
-.ra-case-layout { display:grid; grid-template-columns:minmax(0,1.55fr) minmax(330px,.55fr); grid-template-rows:minmax(520px,1fr) auto; border:1px solid var(--line); }
+.ra-case-layout { display:grid; grid-template-columns:minmax(0,1.55fr) minmax(330px,.55fr); grid-template-rows:minmax(520px,1fr) auto auto; border:1px solid var(--line); }
 .ra-case-main { position:relative; min-height:520px; overflow:hidden; background:#d4d1ca; }
 .ra-case-main::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,transparent 58%,rgba(0,0,0,.2)); }
 .ra-case-main>img { width:100%; height:100%; object-fit:cover; transition:transform .5s ease; }
 .ra-case-main:hover>img { transform:scale(1.025); }
 .ra-case-main>span { position:absolute; z-index:2; left:20px; top:20px; padding:9px 11px; background:#fff; font-size:9px; font-weight:800; letter-spacing:.12em; }
+.ra-case-main>b { position:absolute; z-index:2; right:20px; bottom:20px; padding:9px 11px; background:var(--red); color:#fff; font-size:9px; letter-spacing:.12em; }
 .ra-case-info { display:flex; flex-direction:column; padding:40px; background:#171a1d; color:#fff; }
 .ra-case-info small { color:rgba(255,255,255,.4); font-size:8px; letter-spacing:.14em; text-transform:uppercase; }
-.ra-case-info strong { margin-top:9px; color:var(--red); font-family:Impact,"Arial Black",sans-serif; font-size:56px; line-height:1; }
+.ra-case-info strong { margin-top:9px; color:var(--red); font-family:Impact,"Arial Black",sans-serif; font-size:56px; line-height:1; letter-spacing:.03em; }
 .ra-case-info h3 { margin:auto 0 15px; font-family:Impact,"Arial Black",sans-serif; font-size:44px; line-height:.95; text-transform:uppercase; }
-.ra-case-info p { color:rgba(255,255,255,.5); font-size:11px; }
+.ra-case-info p { color:rgba(255,255,255,.5); font-size:11px; line-height:1.65; }
 .ra-case-info a { display:flex; justify-content:space-between; margin-top:28px; padding:16px; background:var(--red); font-size:9px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
 .ra-case-info a span { font-size:18px; }
 .ra-case-strip { grid-column:1/-1; display:grid; grid-template-columns:repeat(4,1fr); min-height:98px; border-top:1px solid var(--line); }
@@ -106,6 +107,12 @@ button,input { font:inherit; }
 .ra-case-strip span { position:absolute; left:10px; top:10px; padding:5px 7px; background:#fff; font-size:8px; }
 .ra-case-strip button.active img,.ra-case-strip button:hover img { filter:none; opacity:1; }
 .ra-case-strip button.active::after { content:""; position:absolute; left:0; right:0; bottom:0; height:5px; background:var(--red); }
+.ra-case-gallery { grid-column:1/-1; display:grid; grid-template-columns:repeat(3,1fr); gap:1px; padding:1px; background:var(--line); }
+.ra-case-gallery button { position:relative; aspect-ratio:16/7; overflow:hidden; border:0; background:#171a1d; cursor:pointer; }
+.ra-case-gallery img { width:100%; height:100%; object-fit:cover; opacity:.58; filter:saturate(.7); transition:transform .35s ease,opacity .35s ease,filter .35s ease; }
+.ra-case-gallery span { position:absolute; left:14px; bottom:12px; display:grid; width:25px; height:25px; place-items:center; background:rgba(255,255,255,.92); color:var(--ink); font-size:8px; font-weight:800; }
+.ra-case-gallery button.active img,.ra-case-gallery button:hover img { opacity:1; filter:none; transform:scale(1.04); }
+.ra-case-gallery button.active::after { content:""; position:absolute; inset:0; border:4px solid var(--red); pointer-events:none; }
 
 .ra-about { background:var(--paper); }
 .ra-about-grid { display:grid; grid-template-columns:minmax(0,1.24fr) minmax(340px,.76fr); gap:clamp(56px,8vw,120px); align-items:center; }
@@ -186,6 +193,8 @@ footer { background:#0f1113; color:#fff; }
   .ra-case-main { min-height:350px; }
   .ra-case-info { min-height:380px; padding:30px 24px; }
   .ra-case-strip { grid-template-columns:1fr 1fr; }
+  .ra-case-gallery { grid-template-columns:1fr; }
+  .ra-case-gallery button { aspect-ratio:16/9; }
   .ra-about-grid { grid-template-columns:1fr; }
   .ra-about-media { width:calc(100% - 20px); }
   .ra-request form { grid-template-columns:1fr; padding:26px 20px; }

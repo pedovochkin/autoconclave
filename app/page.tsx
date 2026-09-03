@@ -22,17 +22,51 @@ const steps = [
   ['Ключи', 'Заберите проверенный автомобиль и полный комплект документов.'],
 ];
 const cases = [
-  { image:'/images/case-5.jpg', model:'Mercedes GLE Coupe', price:'157 000 $', meta:'2025 · Новый · Европа' },
-  { image:'/images/case-2.jpg', model:'Audi A8', price:'87 000 €', meta:'2022 · 20 000 км · Европа' },
-  { image:'/images/case-4.jpg', model:'GMC Yukon', price:'129 000 $', meta:'2022 · 38 000 км · США' },
-  { image:'/images/case-6.jpg', model:'BMW X7', price:'119 000 $', meta:'2022 · 36 000 км · США' },
+  {
+    model:'Porsche Cayenne', category:'Автомобиль · 3 фотографии',
+    meta:'Экстерьер и салон. Реальные фотографии автомобиля после поставки.',
+    photos:[
+      { image:'/images/cases/porsche-cayenne-01.jpg', alt:'Porsche Cayenne — вид спереди' },
+      { image:'/images/cases/porsche-cayenne-02.jpg', alt:'Porsche Cayenne — вид сзади' },
+      { image:'/images/cases/porsche-cayenne-03.jpg', alt:'Porsche Cayenne — салон' },
+    ],
+  },
+  {
+    model:'BMW X7', category:'Автомобиль · 3 фотографии',
+    meta:'Экстерьер и салон. Реальные фотографии автомобиля после поставки.',
+    photos:[
+      { image:'/images/cases/bmw-x7-01.jpg', alt:'BMW X7 — вид спереди' },
+      { image:'/images/cases/bmw-x7-02.jpg', alt:'BMW X7 — вид сзади' },
+      { image:'/images/cases/bmw-x7-03.jpg', alt:'BMW X7 — салон' },
+    ],
+  },
+  {
+    model:'GMC Yukon', category:'Автомобиль · 3 фотографии',
+    meta:'Экстерьер и салон. Реальные фотографии автомобиля после поставки.',
+    photos:[
+      { image:'/images/cases/gmc-yukon-01.jpg', alt:'GMC Yukon — вид спереди' },
+      { image:'/images/cases/gmc-yukon-02.jpg', alt:'GMC Yukon — вид сзади' },
+      { image:'/images/cases/gmc-yukon-03.jpg', alt:'GMC Yukon — салон' },
+    ],
+  },
+  {
+    model:'Kawasaki Versys 1000', category:'Мотоцикл · 3 фотографии',
+    meta:'Внешний вид и ключевые детали. Реальные фотографии мотоцикла после поставки.',
+    photos:[
+      { image:'/images/cases/kawasaki-versys-01.jpg', alt:'Kawasaki Versys 1000 — общий вид' },
+      { image:'/images/cases/kawasaki-versys-02.jpg', alt:'Kawasaki Versys 1000 — бак и логотип' },
+      { image:'/images/cases/kawasaki-versys-03.jpg', alt:'Kawasaki Versys 1000 — двигатель' },
+    ],
+  },
 ];
 
 export default function Home() {
   const [step, setStep] = useState(0);
   const [caseIndex, setCaseIndex] = useState(0);
+  const [photoIndex, setPhotoIndex] = useState(0);
   const [sent, setSent] = useState(false);
   const currentCase = cases[caseIndex];
+  const currentPhoto = currentCase.photos[photoIndex];
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -75,7 +109,12 @@ export default function Home() {
 
       <section className="ra-section ra-cases" id="cases"><div className="ra-shell">
         <div className="ra-section-title"><span>04 / Поставленные автомобили</span><h2>Выбор,<br /><em>подтверждённый делом.</em></h2></div>
-        <div className="ra-case-layout"><div className="ra-case-main"><img src={asset(currentCase.image)} alt={currentCase.model}/><span>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</span></div><div className="ra-case-info"><small>Цена под ключ</small><strong>{currentCase.price}</strong><h3>{currentCase.model}</h3><p>{currentCase.meta}</p><a href="#request">Хочу похожий <span>↗</span></a></div><div className="ra-case-strip">{cases.map((item,index)=><button className={caseIndex===index?'active':''} type="button" key={item.model} onClick={()=>setCaseIndex(index)}><img src={asset(item.image)} alt=""/><span>{String(index+1).padStart(2,'0')}</span></button>)}</div></div>
+        <div className="ra-case-layout">
+          <div className="ra-case-main"><img src={asset(currentPhoto.image)} alt={currentPhoto.alt}/><span>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</span><b>{String(photoIndex+1).padStart(2,'0')} / {String(currentCase.photos.length).padStart(2,'0')}</b></div>
+          <div className="ra-case-info"><small>Реальная поставка</small><strong>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</strong><h3>{currentCase.model}</h3><p>{currentCase.category}<br/>{currentCase.meta}</p><a href="#request">Обсудить похожий <span>↗</span></a></div>
+          <div className="ra-case-strip" aria-label="Выбор автомобиля">{cases.map((item,index)=><button className={caseIndex===index?'active':''} type="button" key={item.model} aria-label={`Открыть кейс ${item.model}`} onClick={()=>{setCaseIndex(index);setPhotoIndex(0);}}><img src={asset(item.photos[0].image)} alt=""/><span>{String(index+1).padStart(2,'0')} · {item.model}</span></button>)}</div>
+          <div className="ra-case-gallery" aria-label={`Фотографии ${currentCase.model}`}>{currentCase.photos.map((item,index)=><button className={photoIndex===index?'active':''} type="button" key={item.image} aria-label={`Открыть фотографию ${index+1}`} onClick={()=>setPhotoIndex(index)}><img src={asset(item.image)} alt={item.alt}/><span>{String(index+1).padStart(2,'0')}</span></button>)}</div>
+        </div>
       </div></section>
 
       <section className="ra-section ra-about" id="about"><div className="ra-shell ra-about-grid">
