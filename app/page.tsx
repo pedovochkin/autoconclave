@@ -27,8 +27,9 @@ const steps = [
 ];
 const cases = [
   {
-    model:'Porsche Cayenne', category:'Автомобиль · 3 фотографии',
-    meta:'Экстерьер и салон. Реальные фотографии автомобиля после поставки.',
+    model:'Porsche Cayenne',
+    details:['2023 год', '50 000 км', 'США → Москва · 4 месяца'],
+    price:'120 000 $ под ключ',
     photos:[
       { image:'/images/cases/porsche-cayenne-01.jpg', alt:'Porsche Cayenne — вид спереди' },
       { image:'/images/cases/porsche-cayenne-02.jpg', alt:'Porsche Cayenne — вид сзади' },
@@ -36,17 +37,19 @@ const cases = [
     ],
   },
   {
-    model:'BMW X7', category:'Автомобиль · 3 фотографии',
-    meta:'Экстерьер и салон. Реальные фотографии автомобиля после поставки.',
+    model:'BMW X5 3.0d',
+    details:['Пробег 5 000 км', 'Европа → Москва · 1,5 месяца'],
+    price:'187 000 $ под ключ',
     photos:[
-      { image:'/images/cases/bmw-x7-01.jpg', alt:'BMW X7 — вид спереди' },
-      { image:'/images/cases/bmw-x7-02.jpg', alt:'BMW X7 — вид сзади' },
-      { image:'/images/cases/bmw-x7-03.jpg', alt:'BMW X7 — салон' },
+      { image:'/images/cases/bmw-x5-01.jpg', alt:'BMW X5 — вид спереди' },
+      { image:'/images/cases/bmw-x5-02.jpg', alt:'BMW X5 — вид сзади' },
+      { image:'/images/cases/bmw-x5-03.jpg', alt:'BMW X5 — салон' },
     ],
   },
   {
-    model:'GMC Yukon', category:'Автомобиль · 3 фотографии',
-    meta:'Экстерьер и салон. Реальные фотографии автомобиля после поставки.',
+    model:'GMC Yukon 3.0 дизель',
+    details:['2023 год · 61 000 км', 'США → Москва · 4 месяца'],
+    price:'105 000 $ под ключ',
     photos:[
       { image:'/images/cases/gmc-yukon-01.jpg', alt:'GMC Yukon — вид спереди' },
       { image:'/images/cases/gmc-yukon-02.jpg', alt:'GMC Yukon — вид сзади' },
@@ -54,12 +57,23 @@ const cases = [
     ],
   },
   {
-    model:'Kawasaki Versys 1000', category:'Мотоцикл · 3 фотографии',
-    meta:'Внешний вид и ключевые детали. Реальные фотографии мотоцикла после поставки.',
+    model:'Mercedes-Benz GLS',
+    details:['2023 год · 36 000 км', 'Корея → Москва · 2 месяца'],
+    price:'120 000 $ под ключ',
     photos:[
-      { image:'/images/cases/kawasaki-versys-01.jpg', alt:'Kawasaki Versys 1000 — общий вид' },
-      { image:'/images/cases/kawasaki-versys-02.jpg', alt:'Kawasaki Versys 1000 — бак и логотип' },
-      { image:'/images/cases/kawasaki-versys-03.jpg', alt:'Kawasaki Versys 1000 — двигатель' },
+      { image:'/images/cases/mercedes-gls-01.jpg', alt:'Mercedes-Benz GLS — вид спереди' },
+      { image:'/images/cases/mercedes-gls-02.jpg', alt:'Mercedes-Benz GLS — вид сзади' },
+      { image:'/images/cases/mercedes-gls-03.jpg', alt:'Mercedes-Benz GLS — салон' },
+    ],
+  },
+  {
+    model:'Lamborghini Urus',
+    details:['2025 год · новый автомобиль', 'Европа → Москва · 1,5 месяца'],
+    price:'435 000 $ под ключ',
+    photos:[
+      { image:'/images/cases/lamborghini-urus-01.jpg', alt:'Lamborghini Urus — вид спереди' },
+      { image:'/images/cases/lamborghini-urus-02.jpg', alt:'Lamborghini Urus — вид сзади' },
+      { image:'/images/cases/lamborghini-urus-03.jpg', alt:'Lamborghini Urus — салон' },
     ],
   },
 ];
@@ -136,7 +150,7 @@ export default function Home() {
         <div className="ra-section-title"><span>04 / Поставленные автомобили</span><h2>Выбор,<br /><em>подтверждённый делом.</em></h2></div>
         <div className="ra-case-layout">
           <div className="ra-case-main" onTouchStart={startGalleryTouch} onTouchEnd={finishGalleryTouch}><img src={asset(currentPhoto.image)} alt={currentPhoto.alt}/><span>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</span><div className="ra-case-controls"><button type="button" onClick={showPreviousPhoto} aria-label="Предыдущая фотография"><Arrow direction="prev" /></button><b>{String(photoIndex+1).padStart(2,'0')} / {String(currentCase.photos.length).padStart(2,'0')}</b><button type="button" onClick={showNextPhoto} aria-label="Следующая фотография"><Arrow /></button></div></div>
-          <div className="ra-case-info"><small>Поставленный автомобиль</small><strong>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</strong><h3>{currentCase.model}</h3><p>{currentCase.category}<br/>{currentCase.meta}</p><a href="#request">Обсудить похожий <Arrow diagonal /></a></div>
+          <div className="ra-case-info"><small>Кейс поставки</small><strong>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</strong><h3>{currentCase.model}</h3><div className="ra-case-details">{currentCase.details.map((detail) => <span key={detail}>{detail}</span>)}</div><div className="ra-case-price"><small>Стоимость с доставкой</small><b>{currentCase.price}</b></div><a href="#request">Обсудить похожий <Arrow diagonal /></a></div>
           <div className="ra-case-strip" aria-label="Выбор автомобиля">{cases.map((item,index)=><button className={caseIndex===index?'active':''} type="button" key={item.model} aria-label={`Открыть кейс ${item.model}`} onClick={()=>{setCaseIndex(index);setPhotoIndex(0);}}><img src={asset(item.photos[0].image)} alt=""/><span>{String(index+1).padStart(2,'0')} · {item.model}</span></button>)}</div>
           <div className="ra-case-gallery" aria-label={`Фотографии ${currentCase.model}`}>{currentCase.photos.map((item,index)=><button className={photoIndex===index?'active':''} type="button" key={item.image} aria-label={`Открыть фотографию ${index+1}`} onClick={()=>setPhotoIndex(index)}><img src={asset(item.image)} alt={item.alt}/><span>{String(index+1).padStart(2,'0')}</span></button>)}</div>
         </div>
