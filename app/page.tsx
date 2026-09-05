@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, TouchEvent, useRef, useState } from 'react';
 
 const asset = (path: string) => `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}${path}`;
 
@@ -69,10 +69,28 @@ export default function Home() {
   const [caseIndex, setCaseIndex] = useState(0);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [sent, setSent] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const galleryTouchStart = useRef<{ x: number; y: number } | null>(null);
   const currentCase = cases[caseIndex];
   const currentPhoto = currentCase.photos[photoIndex];
   const showPreviousPhoto = () => setPhotoIndex((photoIndex + currentCase.photos.length - 1) % currentCase.photos.length);
   const showNextPhoto = () => setPhotoIndex((photoIndex + 1) % currentCase.photos.length);
+
+  function startGalleryTouch(event: TouchEvent<HTMLDivElement>) {
+    const touch = event.touches[0];
+    galleryTouchStart.current = { x: touch.clientX, y: touch.clientY };
+  }
+
+  function finishGalleryTouch(event: TouchEvent<HTMLDivElement>) {
+    const start = galleryTouchStart.current;
+    const touch = event.changedTouches[0];
+    galleryTouchStart.current = null;
+    if (!start) return;
+    const distanceX = touch.clientX - start.x;
+    const distanceY = touch.clientY - start.y;
+    if (Math.abs(distanceX) < 44 || Math.abs(distanceX) < Math.abs(distanceY)) return;
+    if (distanceX > 0) showPreviousPhoto(); else showNextPhoto();
+  }
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -81,10 +99,11 @@ export default function Home() {
 
   return (
     <main>
-      <header className="ra-header ra-shell" id="top">
-        <a href="#top" className="ra-brand"><img src={asset('/images/logo-dark-bg.png')} alt="Авто-Конклав" /></a>
-        <nav aria-label="Основная навигация"><a href="#services">Услуги</a><a href="#route">Маршрут</a><a href="#cases">Поставки</a><a href="#about">О компании</a></nav>
+      <header className={`ra-header ra-shell${mobileMenuOpen ? ' menu-open' : ''}`} id="top">
+        <a href="#top" className="ra-brand" onClick={() => setMobileMenuOpen(false)}><img src={asset('/images/logo-dark-bg.png')} alt="Авто-Конклав" /></a>
+        <nav id="site-navigation" aria-label="Основная навигация"><a href="#services" onClick={() => setMobileMenuOpen(false)}>Услуги</a><a href="#route" onClick={() => setMobileMenuOpen(false)}>Маршрут</a><a href="#cases" onClick={() => setMobileMenuOpen(false)}>Поставки</a><a href="#about" onClick={() => setMobileMenuOpen(false)}>О компании</a><a className="ra-nav-request" href="#request" onClick={() => setMobileMenuOpen(false)}>Обсудить задачу <Arrow diagonal /></a></nav>
         <a className="ra-menu-cta" href="#request">Обсудить задачу <Arrow diagonal /></a>
+        <button className="ra-mobile-menu" type="button" aria-label={mobileMenuOpen ? 'Закрыть меню' : 'Открыть меню'} aria-expanded={mobileMenuOpen} aria-controls="site-navigation" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}><span /><span /><span /></button>
       </header>
 
       <section className="ra-hero ra-shell">
@@ -94,7 +113,7 @@ export default function Home() {
           <div className="ra-hero-bottom"><p>Профессиональный подбор, проверка, выкуп и доставка автомобилей из шести ключевых рынков — под единым контролем.</p><a href="#request">Начать подбор <Arrow diagonal /></a></div>
         </div>
         <div className="ra-hero-media"><img src={asset('/images/hero-mercedes.jpg')} alt="Mercedes-Benz — автомобиль, поставленный Авто-Конклав" /><div className="ra-media-label"><small>Поставка под ключ</small><b>Европа → Москва</b></div><span className="ra-media-number">01</span></div>
-        <div className="ra-facts"><div><strong>27+</strong><span>лет опыта</span></div><div><strong>1000+</strong><span>доставок</span></div><div><strong>06</strong><span>рынков</span></div><div><strong>01</strong><span>ответственный</span></div></div>
+        <div className="ra-facts"><div><strong>27+</strong><span>лет опыта</span></div><div><strong>1000+</strong><span>доставок</span></div><div><strong>6</strong><span>направлений</span></div><div><strong>1</strong><span>менеджер<br/>на связи</span></div></div>
       </section>
 
       <section className="ra-section ra-services" id="services"><div className="ra-shell">
@@ -116,8 +135,8 @@ export default function Home() {
       <section className="ra-section ra-cases" id="cases"><div className="ra-shell">
         <div className="ra-section-title"><span>04 / Поставленные автомобили</span><h2>Выбор,<br /><em>подтверждённый делом.</em></h2></div>
         <div className="ra-case-layout">
-          <div className="ra-case-main"><img src={asset(currentPhoto.image)} alt={currentPhoto.alt}/><span>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</span><div className="ra-case-controls"><button type="button" onClick={showPreviousPhoto} aria-label="Предыдущая фотография"><Arrow direction="prev" /></button><b>{String(photoIndex+1).padStart(2,'0')} / {String(currentCase.photos.length).padStart(2,'0')}</b><button type="button" onClick={showNextPhoto} aria-label="Следующая фотография"><Arrow /></button></div></div>
-          <div className="ra-case-info"><small>Реальная поставка</small><strong>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</strong><h3>{currentCase.model}</h3><p>{currentCase.category}<br/>{currentCase.meta}</p><a href="#request">Обсудить похожий <Arrow diagonal /></a></div>
+          <div className="ra-case-main" onTouchStart={startGalleryTouch} onTouchEnd={finishGalleryTouch}><img src={asset(currentPhoto.image)} alt={currentPhoto.alt}/><span>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</span><div className="ra-case-controls"><button type="button" onClick={showPreviousPhoto} aria-label="Предыдущая фотография"><Arrow direction="prev" /></button><b>{String(photoIndex+1).padStart(2,'0')} / {String(currentCase.photos.length).padStart(2,'0')}</b><button type="button" onClick={showNextPhoto} aria-label="Следующая фотография"><Arrow /></button></div></div>
+          <div className="ra-case-info"><small>Поставленный автомобиль</small><strong>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</strong><h3>{currentCase.model}</h3><p>{currentCase.category}<br/>{currentCase.meta}</p><a href="#request">Обсудить похожий <Arrow diagonal /></a></div>
           <div className="ra-case-strip" aria-label="Выбор автомобиля">{cases.map((item,index)=><button className={caseIndex===index?'active':''} type="button" key={item.model} aria-label={`Открыть кейс ${item.model}`} onClick={()=>{setCaseIndex(index);setPhotoIndex(0);}}><img src={asset(item.photos[0].image)} alt=""/><span>{String(index+1).padStart(2,'0')} · {item.model}</span></button>)}</div>
           <div className="ra-case-gallery" aria-label={`Фотографии ${currentCase.model}`}>{currentCase.photos.map((item,index)=><button className={photoIndex===index?'active':''} type="button" key={item.image} aria-label={`Открыть фотографию ${index+1}`} onClick={()=>setPhotoIndex(index)}><img src={asset(item.image)} alt={item.alt}/><span>{String(index+1).padStart(2,'0')}</span></button>)}</div>
         </div>
