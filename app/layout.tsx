@@ -37,7 +37,7 @@ const structuredData = {
       image: `${siteUrl}/og.png`,
       description: siteDescription,
       telephone: '+79031307887',
-      email: 'info@autoconclave.com',
+      email: 'autoconclave@yandex.ru',
       address: {
         '@type': 'PostalAddress',
         streetAddress: 'улица Верхняя, 20к1',

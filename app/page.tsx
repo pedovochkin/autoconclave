@@ -82,9 +82,11 @@ export default function Home() {
   const [step, setStep] = useState(0);
   const [caseIndex, setCaseIndex] = useState(0);
   const [photoIndex, setPhotoIndex] = useState(0);
-  const [sent, setSent] = useState(false);
+  const [requestMarket, setRequestMarket] = useState('');
+  const [requestCar, setRequestCar] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const galleryTouchStart = useRef<{ x: number; y: number } | null>(null);
+  const requestNameInput = useRef<HTMLInputElement>(null);
   const currentCase = cases[caseIndex];
   const currentPhoto = currentCase.photos[photoIndex];
   const showPreviousPhoto = () => setPhotoIndex((photoIndex + currentCase.photos.length - 1) % currentCase.photos.length);
@@ -106,17 +108,33 @@ export default function Home() {
     if (distanceX > 0) showPreviousPhoto(); else showNextPhoto();
   }
 
+  function openRequest(market = '', car = '') {
+    if (market) setRequestMarket(market);
+    if (car) setRequestCar(car);
+    document.getElementById('request')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.setTimeout(() => requestNameInput.current?.focus(), 450);
+  }
+
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSent(true);
+    const form = new FormData(event.currentTarget);
+    const name = String(form.get('name') ?? '').trim();
+    const phone = String(form.get('phone') ?? '').trim();
+    const car = String(form.get('car') ?? '').trim();
+    const budget = String(form.get('budget') ?? '').trim();
+    const market = String(form.get('market') ?? '').trim() || 'пока не определился';
+    const message = `Здравствуйте!\n\nМеня зовут: ${name}\nТелефон: ${phone}\nИнтересует: ${car}\nБюджет: ${budget}\nРынок поставки: ${market}\n\nХочу получить подбор автомобиля.`;
+
+    window.location.assign(`https://t.me/MihailVladimirovich?text=${encodeURIComponent(message)}`);
   }
 
   return (
     <main>
       <header className={`ra-header ra-shell${mobileMenuOpen ? ' menu-open' : ''}`} id="top">
         <a href="#top" className="ra-brand" onClick={() => setMobileMenuOpen(false)}><img src={asset('/images/logo-dark-bg.png')} alt="Авто-Конклав" /></a>
-        <nav id="site-navigation" aria-label="Основная навигация"><a href="#services" onClick={() => setMobileMenuOpen(false)}>Услуги</a><a href="#route" onClick={() => setMobileMenuOpen(false)}>Маршрут</a><a href="#cases" onClick={() => setMobileMenuOpen(false)}>Поставки</a><a href="#about" onClick={() => setMobileMenuOpen(false)}>О компании</a><a className="ra-nav-request" href="#request" onClick={() => setMobileMenuOpen(false)}>Обсудить задачу <Arrow diagonal /></a></nav>
-        <a className="ra-menu-cta" href="#request">Обсудить задачу <Arrow diagonal /></a>
+        <nav id="site-navigation" aria-label="Основная навигация"><a href="#services" onClick={() => setMobileMenuOpen(false)}>Услуги</a><a href="#route" onClick={() => setMobileMenuOpen(false)}>Маршрут</a><a href="#cases" onClick={() => setMobileMenuOpen(false)}>Поставки</a><a href="#about" onClick={() => setMobileMenuOpen(false)}>О компании</a><a className="ra-nav-request" href="#request" onClick={(event) => { event.preventDefault(); setMobileMenuOpen(false); openRequest(); }}>Обсудить задачу <Arrow diagonal /></a><div className="ra-nav-contacts"><a href="tel:+79031307887">+7 (903) 130-78-87</a><a href="mailto:autoconclave@yandex.ru">autoconclave@yandex.ru</a></div></nav>
+        <div className="ra-header-contacts" aria-label="Контакты"><a href="tel:+79031307887">+7 (903) 130-78-87</a><a href="mailto:autoconclave@yandex.ru">autoconclave@yandex.ru</a></div>
+        <a className="ra-menu-cta" href="#request" onClick={(event) => { event.preventDefault(); openRequest(); }}>Обсудить задачу <Arrow diagonal /></a>
         <button className="ra-mobile-menu" type="button" aria-label={mobileMenuOpen ? 'Закрыть меню' : 'Открыть меню'} aria-expanded={mobileMenuOpen} aria-controls="site-navigation" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}><span /><span /><span /></button>
       </header>
 
@@ -124,7 +142,7 @@ export default function Home() {
         <div className="ra-hero-title">
           <div className="ra-index"><span>Подбор и доставка авто в Москву</span><b>1998—2026</b></div>
           <h1>Автомобиль.<br /><em>Без границ<span className="ra-hero-dot">.</span></em></h1>
-          <div className="ra-hero-bottom"><p>Подбираем, проверяем, выкупаем и доставляем автомобили в Москву из Европы, США, Кореи, Китая, Японии и Дубая.</p><a href="#request">Начать подбор <Arrow diagonal /></a></div>
+          <div className="ra-hero-bottom"><p>Подбираем, проверяем, выкупаем и доставляем автомобили в Москву из Европы, США, Кореи, Китая, Японии и Дубая.</p><a href="#request" onClick={(event) => { event.preventDefault(); openRequest(); }}>Начать подбор <Arrow diagonal /></a></div>
         </div>
         <div className="ra-hero-media"><img src={asset('/images/hero-mercedes.jpg')} alt="Mercedes-Benz — автомобиль, доставленный Авто-Конклав в Москву" fetchPriority="high" decoding="async" /><div className="ra-media-label"><small>Поставка под ключ</small><b>Европа → Москва</b></div><span className="ra-media-number">01</span></div>
         <div className="ra-facts"><div><strong>27+</strong><span>лет опыта</span></div><div><strong>1000+</strong><span>доставок</span></div><div><strong>6</strong><span>направлений</span></div><div><strong>1</strong><span>менеджер<br/>на связи</span></div></div>
@@ -137,7 +155,7 @@ export default function Home() {
 
       <section className="ra-atlas"><div className="ra-shell ra-atlas-grid">
         <div className="ra-atlas-copy"><span>02 / География поставок</span><h2>Шесть рынков.<br /><em>Один стандарт.</em></h2><p>Работаем с Европой, США, Китаем, Кореей, Дубаем и Японией — от выбора автомобиля до выдачи ключей в Москве.</p></div>
-        <div className="ra-market-list">{markets.map(([number,name,detail]) => <div key={number}><span>{number}</span><b>{name}</b><small>{detail}</small><i><Arrow /></i></div>)}</div>
+        <div className="ra-market-list">{markets.map(([number,name,detail]) => <button key={number} type="button" onClick={() => openRequest(name)} aria-label={`Подобрать автомобиль из ${name}`}><span>{number}</span><b>{name}</b><small>{detail}</small><i><Arrow /></i></button>)}</div>
       </div></section>
 
       <section className="ra-section ra-route" id="route"><div className="ra-shell">
@@ -150,7 +168,7 @@ export default function Home() {
         <div className="ra-section-title"><span>04 / Поставленные автомобили</span><h2>Выбор,<br /><em>подтверждённый делом.</em></h2></div>
         <div className="ra-case-layout">
           <div className="ra-case-main" onTouchStart={startGalleryTouch} onTouchEnd={finishGalleryTouch}><img src={asset(currentPhoto.image)} alt={currentPhoto.alt} loading="lazy" decoding="async"/><span>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</span><div className="ra-case-controls"><button type="button" onClick={showPreviousPhoto} aria-label="Предыдущая фотография"><Arrow direction="prev" /></button><b>{String(photoIndex+1).padStart(2,'0')} / {String(currentCase.photos.length).padStart(2,'0')}</b><button type="button" onClick={showNextPhoto} aria-label="Следующая фотография"><Arrow /></button></div></div>
-          <div className="ra-case-info"><small>Кейс поставки</small><strong>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</strong><h3>{currentCase.model}</h3><div className="ra-case-details">{currentCase.details.map((detail) => <span key={detail}>{detail}</span>)}</div><div className="ra-case-price"><small>Стоимость с доставкой</small><b>{currentCase.price}</b></div><a href="#request">Обсудить похожий <Arrow diagonal /></a></div>
+          <div className="ra-case-info"><small>Кейс поставки</small><strong>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</strong><h3>{currentCase.model}</h3><div className="ra-case-details">{currentCase.details.map((detail) => <span key={detail}>{detail}</span>)}</div><div className="ra-case-price"><small>Стоимость с доставкой</small><b>{currentCase.price}</b></div><a href="#request" onClick={(event) => { event.preventDefault(); openRequest('', currentCase.model); }}>Обсудить похожий <Arrow diagonal /></a></div>
           <div className="ra-case-strip" aria-label="Выбор автомобиля">{cases.map((item,index)=><button className={caseIndex===index?'active':''} type="button" key={item.model} aria-label={`Открыть кейс ${item.model}`} onClick={()=>{setCaseIndex(index);setPhotoIndex(0);}}><img src={asset(item.photos[0].image)} alt="" loading="lazy" decoding="async"/><span>{String(index+1).padStart(2,'0')} · {item.model}</span></button>)}</div>
           <div className="ra-case-gallery" aria-label={`Фотографии ${currentCase.model}`}>{currentCase.photos.map((item,index)=><button className={photoIndex===index?'active':''} type="button" key={item.image} aria-label={`Открыть фотографию ${index+1}`} onClick={()=>setPhotoIndex(index)}><img src={asset(item.image)} alt={item.alt} loading="lazy" decoding="async"/><span>{String(index+1).padStart(2,'0')}</span></button>)}</div>
         </div>
@@ -162,11 +180,11 @@ export default function Home() {
       </div></section>
 
       <section className="ra-request" id="request"><div className="ra-shell ra-request-grid">
-        <div><span>06 / Ваш запрос</span><h2>Давайте найдём<br /><em>ваш автомобиль.</em></h2><p>Опишите ориентиры — марку, модель и бюджет. Мы вернёмся с вопросами и понятным планом действий.</p><div className="ra-contacts"><a href="tel:+79031307887">+7 (903) 130-78-87</a><a href="mailto:info@autoconclave.com">info@autoconclave.com</a></div></div>
-        <form onSubmit={submit}><label><span>Имя</span><input required name="name" placeholder="Ваше имя"/></label><label><span>Телефон</span><input required name="phone" placeholder="+7 900 000-00-00"/></label><label><span>Автомобиль</span><input name="car" placeholder="Марка и модель"/></label><label><span>Бюджет</span><input name="budget" placeholder="Ориентир"/></label><button type="submit">Отправить запрос <Arrow diagonal /></button>{sent&&<p>Спасибо. Черновик заявки готов — свяжитесь с нами по телефону или почте.</p>}</form>
+        <div><span>06 / Ваш запрос</span><h2>Давайте найдём<br /><em>ваш автомобиль.</em></h2><p>Заполните короткую заявку — после нажатия откроется Telegram с уже подготовленным сообщением для менеджера.</p><div className="ra-contacts"><a href="tel:+79031307887">+7 (903) 130-78-87</a><a href="mailto:autoconclave@yandex.ru">autoconclave@yandex.ru</a></div></div>
+        <form onSubmit={submit}><label><span>Имя</span><input ref={requestNameInput} required name="name" autoComplete="name" placeholder="Ваше имя"/></label><label><span>Телефон</span><input required type="tel" name="phone" autoComplete="tel" inputMode="tel" placeholder="+7 900 000-00-00"/></label><label><span>Марка и модель</span><input required name="car" value={requestCar} onChange={(event) => setRequestCar(event.target.value)} placeholder="Например, BMW X5"/></label><label><span>Бюджет</span><input required name="budget" inputMode="numeric" placeholder="Например, 8 000 000 ₽"/></label><label><span>Рынок поставки</span><select name="market" value={requestMarket} onChange={(event) => setRequestMarket(event.target.value)}><option value="">Пока не определился</option>{markets.map(([, name]) => <option key={name} value={name}>{name}</option>)}</select></label><button type="submit">Продолжить в Telegram <Arrow diagonal /></button><p className="ra-form-note">Данные не сохраняются на сайте: они подставятся в сообщение для менеджера в Telegram.</p></form>
       </div></section>
 
-      <footer><div className="ra-shell ra-footer"><img src={asset('/images/logo-dark-bg.png')} alt="Авто-Конклав"/><p>Москва · ул. Верхняя, 20к1<br/>Ежедневно 09:00—20:00</p><a href="#top">Наверх <Arrow diagonal /></a></div></footer>
+      <footer><div className="ra-shell ra-footer"><img src={asset('/images/logo-dark-bg.png')} alt="Авто-Конклав"/><p className="ra-footer-address">г. Москва, ул. Верхняя, 20к1<br/>Ежедневно · 09:00–20:00</p><div className="ra-footer-contacts"><a href="tel:+79031307887">+7 (903) 130-78-87</a><a href="mailto:autoconclave@yandex.ru">autoconclave@yandex.ru</a></div><a className="ra-footer-top" href="#top">Наверх <Arrow diagonal /></a></div></footer>
     </main>
   );
 }
