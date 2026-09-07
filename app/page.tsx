@@ -158,7 +158,7 @@ export default function Home() {
 
       <section className="ra-section ra-about" id="about"><div className="ra-shell ra-about-grid">
         <div className="ra-about-copy"><span>05 / Авто-Конклав</span><blockquote>«Мы строим доверие не словами, а контролем каждой детали сделки».</blockquote><p>С 1998 года команда поставляет автомобили, мотоциклы, специальную технику, катера и яхты. Международный опыт превратили в понятную систему для частного клиента.</p><div><b>Моженков Михаил Владимирович</b><small>Управляющий директор</small></div></div>
-        <div className="ra-about-media"><img src={asset('/images/director-v2.png')} alt="Михаил Моженков, управляющий директор"/><span>27 лет<br/>в автобизнесе</span></div>
+        <div className="ra-about-media"><img src={asset('/images/director-v2.png')} alt="Михаил Моженков, управляющий директор"/><span>17 лет<br/>в автобизнесе</span></div>
       </div></section>
 
       <section className="ra-request" id="request"><div className="ra-shell ra-request-grid">
