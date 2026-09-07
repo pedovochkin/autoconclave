@@ -1,7 +1,5 @@
 @import 'tailwindcss';
 
-@font-face { font-family:"AutoConclave Impact"; src:url("/autoconclave/fonts/impact.ttf") format("truetype"); font-style:normal; font-weight:400 900; font-display:swap; }
-
 :root { --red:#be1522; --ink:#212529; --grey:#9d9d9c; --paper:#f4f2ed; --white:#fff; --line:#cbc8c1; --display-font:"AutoConclave Impact",Impact,"Arial Black",sans-serif; }
 * { box-sizing:border-box; }
 html { overflow-x:clip; scroll-behavior:smooth; }

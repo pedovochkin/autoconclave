@@ -122,11 +122,11 @@ export default function Home() {
 
       <section className="ra-hero ra-shell">
         <div className="ra-hero-title">
-          <div className="ra-index"><span>Автомобили со всего мира</span><b>1998—2026</b></div>
+          <div className="ra-index"><span>Подбор и доставка авто в Москву</span><b>1998—2026</b></div>
           <h1>Автомобиль.<br /><em>Без границ<span className="ra-hero-dot">.</span></em></h1>
-          <div className="ra-hero-bottom"><p>Профессиональный подбор, проверка, выкуп и доставка автомобилей из шести ключевых рынков — под единым контролем.</p><a href="#request">Начать подбор <Arrow diagonal /></a></div>
+          <div className="ra-hero-bottom"><p>Подбираем, проверяем, выкупаем и доставляем автомобили в Москву из Европы, США, Кореи, Китая, Японии и Дубая.</p><a href="#request">Начать подбор <Arrow diagonal /></a></div>
         </div>
-        <div className="ra-hero-media"><img src={asset('/images/hero-mercedes.jpg')} alt="Mercedes-Benz — автомобиль, поставленный Авто-Конклав" /><div className="ra-media-label"><small>Поставка под ключ</small><b>Европа → Москва</b></div><span className="ra-media-number">01</span></div>
+        <div className="ra-hero-media"><img src={asset('/images/hero-mercedes.jpg')} alt="Mercedes-Benz — автомобиль, доставленный Авто-Конклав в Москву" fetchPriority="high" decoding="async" /><div className="ra-media-label"><small>Поставка под ключ</small><b>Европа → Москва</b></div><span className="ra-media-number">01</span></div>
         <div className="ra-facts"><div><strong>27+</strong><span>лет опыта</span></div><div><strong>1000+</strong><span>доставок</span></div><div><strong>6</strong><span>направлений</span></div><div><strong>1</strong><span>менеджер<br/>на связи</span></div></div>
       </section>
 
@@ -136,7 +136,7 @@ export default function Home() {
       </div></section>
 
       <section className="ra-atlas"><div className="ra-shell ra-atlas-grid">
-        <div className="ra-atlas-copy"><span>02 / География</span><h2>Шесть рынков.<br /><em>Один стандарт.</em></h2><p>Знаем особенности каждой площадки, логистического плеча и комплекта документов.</p></div>
+        <div className="ra-atlas-copy"><span>02 / География поставок</span><h2>Шесть рынков.<br /><em>Один стандарт.</em></h2><p>Работаем с Европой, США, Китаем, Кореей, Дубаем и Японией — от выбора автомобиля до выдачи ключей в Москве.</p></div>
         <div className="ra-market-list">{markets.map(([number,name,detail]) => <div key={number}><span>{number}</span><b>{name}</b><small>{detail}</small><i><Arrow /></i></div>)}</div>
       </div></section>
 
@@ -149,16 +149,16 @@ export default function Home() {
       <section className="ra-section ra-cases" id="cases"><div className="ra-shell">
         <div className="ra-section-title"><span>04 / Поставленные автомобили</span><h2>Выбор,<br /><em>подтверждённый делом.</em></h2></div>
         <div className="ra-case-layout">
-          <div className="ra-case-main" onTouchStart={startGalleryTouch} onTouchEnd={finishGalleryTouch}><img src={asset(currentPhoto.image)} alt={currentPhoto.alt}/><span>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</span><div className="ra-case-controls"><button type="button" onClick={showPreviousPhoto} aria-label="Предыдущая фотография"><Arrow direction="prev" /></button><b>{String(photoIndex+1).padStart(2,'0')} / {String(currentCase.photos.length).padStart(2,'0')}</b><button type="button" onClick={showNextPhoto} aria-label="Следующая фотография"><Arrow /></button></div></div>
+          <div className="ra-case-main" onTouchStart={startGalleryTouch} onTouchEnd={finishGalleryTouch}><img src={asset(currentPhoto.image)} alt={currentPhoto.alt} loading="lazy" decoding="async"/><span>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</span><div className="ra-case-controls"><button type="button" onClick={showPreviousPhoto} aria-label="Предыдущая фотография"><Arrow direction="prev" /></button><b>{String(photoIndex+1).padStart(2,'0')} / {String(currentCase.photos.length).padStart(2,'0')}</b><button type="button" onClick={showNextPhoto} aria-label="Следующая фотография"><Arrow /></button></div></div>
           <div className="ra-case-info"><small>Кейс поставки</small><strong>{String(caseIndex+1).padStart(2,'0')} / {String(cases.length).padStart(2,'0')}</strong><h3>{currentCase.model}</h3><div className="ra-case-details">{currentCase.details.map((detail) => <span key={detail}>{detail}</span>)}</div><div className="ra-case-price"><small>Стоимость с доставкой</small><b>{currentCase.price}</b></div><a href="#request">Обсудить похожий <Arrow diagonal /></a></div>
-          <div className="ra-case-strip" aria-label="Выбор автомобиля">{cases.map((item,index)=><button className={caseIndex===index?'active':''} type="button" key={item.model} aria-label={`Открыть кейс ${item.model}`} onClick={()=>{setCaseIndex(index);setPhotoIndex(0);}}><img src={asset(item.photos[0].image)} alt=""/><span>{String(index+1).padStart(2,'0')} · {item.model}</span></button>)}</div>
-          <div className="ra-case-gallery" aria-label={`Фотографии ${currentCase.model}`}>{currentCase.photos.map((item,index)=><button className={photoIndex===index?'active':''} type="button" key={item.image} aria-label={`Открыть фотографию ${index+1}`} onClick={()=>setPhotoIndex(index)}><img src={asset(item.image)} alt={item.alt}/><span>{String(index+1).padStart(2,'0')}</span></button>)}</div>
+          <div className="ra-case-strip" aria-label="Выбор автомобиля">{cases.map((item,index)=><button className={caseIndex===index?'active':''} type="button" key={item.model} aria-label={`Открыть кейс ${item.model}`} onClick={()=>{setCaseIndex(index);setPhotoIndex(0);}}><img src={asset(item.photos[0].image)} alt="" loading="lazy" decoding="async"/><span>{String(index+1).padStart(2,'0')} · {item.model}</span></button>)}</div>
+          <div className="ra-case-gallery" aria-label={`Фотографии ${currentCase.model}`}>{currentCase.photos.map((item,index)=><button className={photoIndex===index?'active':''} type="button" key={item.image} aria-label={`Открыть фотографию ${index+1}`} onClick={()=>setPhotoIndex(index)}><img src={asset(item.image)} alt={item.alt} loading="lazy" decoding="async"/><span>{String(index+1).padStart(2,'0')}</span></button>)}</div>
         </div>
       </div></section>
 
       <section className="ra-section ra-about" id="about"><div className="ra-shell ra-about-grid">
         <div className="ra-about-copy"><span>05 / Авто-Конклав</span><blockquote>«Мы строим доверие не словами, а контролем каждой детали сделки».</blockquote><p>С 1998 года команда поставляет автомобили, мотоциклы, специальную технику, катера и яхты. Международный опыт превратили в понятную систему для частного клиента.</p><div><b>Моженков Михаил Владимирович</b><small>Управляющий директор</small></div></div>
-        <div className="ra-about-media"><img src={asset('/images/director-v2.png')} alt="Михаил Моженков, управляющий директор"/><span>17 лет<br/>в автобизнесе</span></div>
+        <div className="ra-about-media"><img src={asset('/images/director-v2.png')} alt="Михаил Моженков, управляющий директор" loading="lazy" decoding="async"/><span>17 лет<br/>в автобизнесе</span></div>
       </div></section>
 
       <section className="ra-request" id="request"><div className="ra-shell ra-request-grid">
